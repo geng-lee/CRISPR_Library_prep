@@ -11,24 +11,24 @@ General steps :
 
 Necessary Libraries :
 
-Bio
-pandas
-numpy
-argparse
-re
-gffutils
-pyranges as pr
+Bio  
+pandas  
+numpy  
+argparse  
+re  
+gffutils  
+pyranges as pr  
 
 
 Crispor installation on ComputeCanada :
 
-module load python/2.7.18
-python -m venv $HOME/env_CRISPOR
-source $HOME/env_CRISPOR/bin/activate
-module load mysql
-module load blat/3.5
-module load bwa kentutils/401 gffread/0.12.3
-pip install scikit-learn==0.16.1 pandas twobitreader biopython xlwt
-pip install matplotlib
-pip install MySQL-python
-https://github.com/maximilianh/crisporWebsite.git
+module load python/2.7.18  
+python -m venv $HOME/env_CRISPOR  
+source $HOME/env_CRISPOR/bin/activate  
+module load mysql  
+module load blat/3.5  
+module load bwa kentutils/401 gffread/0.12.3  
+pip install scikit-learn==0.16.1 pandas twobitreader biopython xlwt  
+pip install matplotlib  
+pip install MySQL-python  
+https://github.com/maximilianh/crisporWebsite.git  
