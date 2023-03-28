@@ -27,15 +27,15 @@ pyranges as pr
 
 Quick Start :
 
-Step 1) python3 Fetch_bed.py -P your_list_protein.txt -G the_genome (additionnal options are availlable)
-Step 2) python2 [PATH]/crispor.py genome --genomeDir=[PATH] [bedfile step1] [output.score] -o [output.offTarget] --maxOcc=6000 -p [PAM]
-Step 2.5) python3 Filter_offtarget.py -I [output.offTarget] (additionnal options are availlable)
-Step 3) python3 basic_annotation.py -E [editors] -S [output.score] -b [.bed step1] (additionnal options are availlable)
-step 4) nextflow run util/VEP_variant/Annotation.nf -c nextflow.config 
-
-... To produce a full Crispr library experiment positive controls (induced stop) and negative controls are necessary.
-
-step 5) python3 oligomer.py -S [study.csv output step 3] -I [positive_control.csv output step 3] -V [positive_control.vep output step 4] -K [N istop] -N [negative_control.csv output step 3] -J [N negative_controls]
+Step 1) python3 Fetch_bed.py -P your_list_protein.txt -G the_genome (additionnal options are availlable)  
+Step 2) python2 [PATH]/crispor.py genome --genomeDir=[PATH] [bedfile step1] [output.score] -o [output.offTarget] --maxOcc=6000 -p [PAM]  
+Step 2.5) python3 Filter_offtarget.py -I [output.offTarget] (additionnal options are availlable)  
+Step 3) python3 basic_annotation.py -E [editors] -S [output.score] -b [.bed step1] (additionnal options are availlable)  
+step 4) nextflow run util/VEP_variant/Annotation.nf -c nextflow.config   
+  
+... To produce a full Crispr library experiment positive controls (induced stop) and negative controls are necessary.  
+  
+step 5) python3 oligomer.py -S [study.csv output step 3] -I [positive_control.csv output step 3] -V [positive_control.vep output step 4] -K [N istop] -N [negative_control.csv output step 3] -J [N negative_controls]  
 
 
 Crispor installation on ComputeCanada :
