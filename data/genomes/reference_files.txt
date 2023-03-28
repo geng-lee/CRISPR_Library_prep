@@ -1,0 +1,7 @@
+Reference file needed :
+
+clinvar (for human)
+GFF3 in db format created with gffutils ->
+
+import gffutils
+db = gffutils.create_db(filename, database_filename)
