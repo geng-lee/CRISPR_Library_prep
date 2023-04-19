@@ -3,8 +3,8 @@ Script(s) and associated files for CRISPR guide RNA generation
 
 Software necessary :
 
-nextflow (https://www.nextflow.io/)
-singulairty (https://docs.sylabs.io/guides/2.6/user-guide/quick_start.html)
+nextflow (https://www.nextflow.io/)  
+singulairty (https://docs.sylabs.io/guides/2.6/user-guide/quick_start.html)  
 python/3.8
 
 Necessary Libraries :
@@ -14,10 +14,10 @@ Necessary Libraries :
 Quick Start :
 
 <ins> step 0) Software :  </ins>
-
-Download this repository : git clone https://github.com/CERC-Genomic-Medicine/CRISPR_Library_prep.git (when public) 
-Download CRISPOR : git clone https://github.com/maximilianh/crisporWebsite.git 
-Install dependency : python3 set-up.py (preferably in a virtual environment see below) 
+   
+Download this repository : git clone https://github.com/CERC-Genomic-Medicine/CRISPR_Library_prep.git (when public)  
+Download CRISPOR : git clone https://github.com/maximilianh/crisporWebsite.git    
+Install dependency : python3 set-up.py (preferably in a virtual environment see below)    
 
 <ins> Step 1 Fetch_bed.py </ins> 
 
