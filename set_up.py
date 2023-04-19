@@ -15,6 +15,8 @@ if missing:
     python = sys.executable
     subprocess.check_call(['pip3', 'install', *missing], stdout=subprocess.DEVNULL)
 
+subprocess.check_call(['git', 'clone', 'https://github.com/maximilianh/crisporWebsite.git'], stdout=subprocess.DEVNULL)
+
 #### Download Accessory files
 import wget
 import gffutils
