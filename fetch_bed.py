@@ -33,7 +33,11 @@ argparser.add_argument('-T', '--Tag', metavar='Annotation', dest='tag', type=str
                        required=False, default='', help='Optional tag (usefull for Essential gene Controls)')
 argparser.add_argument('-M','--Mane_Select', metavar = 'bool', dest = 'MANE_select_option', type = bool, required = False,default='True', help = 'Only select transcript with the main isoform (as define by MANE Select project)')
 
-
+def transform_func(x):
+    # adds some text to the end of transcript IDs
+    if 'transcript_id' in x.attributes:
+        x.attributes['transcript_id'][0] += '_transcript'
+    return x
 
 def Feature_Annotation(Feature, listed):
     returned = []
@@ -54,7 +58,13 @@ if __name__ == '__main__':
     DataDir = os.path.abspath(os.path.dirname(__file__))
     prot = open(args.prot_file, 'r')
     Lines = prot.readlines()
-    db = gffutils.FeatureDB("./data/genomes/"+args.Genome+'.gff.db')
+    if not os.path.exists("./data/genomes/"+args.Genome+'.gff.db') :
+        if not os.path.exists("./data/genomes/"+args.Genome+'.gff') :
+            raise Exception('GFF file is absent.')
+        else :
+            db = gffutils.create_db(gff3, ":memory:", id_spec={'gene': 'gene_name', 'transcript': "transcript_id"}, merge_strategy="create_unique", transform=transform_func, keep_order=True)
+    else :
+        db = gffutils.FeatureDB("./data/genomes/"+args.Genome+'.gff.db')
     out = args.Output+'_'+args.tag+".bed"
     with open(out, "w") as output_handle:
         for line in Lines:
