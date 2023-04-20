@@ -36,7 +36,7 @@ def transform_func(x):
         x.attributes['transcript_id'][0] += '_transcript'
     return x
 
-db = gffutils.create_db('hg38.gff3.gz', id_spec={'gene': 'gene_id', 'transcript': "transcript_id"}, merge_strategy="create_unique", transform=transform_func, keep_order=True)
+# db = gffutils.create_db('hg38.gff3.gz', id_spec={'gene': 'gene_id', 'transcript': "transcript_id"}, merge_strategy="create_unique", transform=transform_func, keep_order=True)
 
 
 url='https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz'
