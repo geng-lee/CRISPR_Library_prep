@@ -62,7 +62,7 @@ if __name__ == '__main__':
         if not os.path.exists(DataDir+"/data/genomes/"+args.Genome+'.gff3.gz') :
             raise Exception('GFF file is absent.')
         else :
-            db = gffutils.create_db(gff3, ":memory:", id_spec={'gene': 'gene_name', 'transcript': "transcript_id"}, merge_strategy="create_unique", transform=transform_func, keep_order=True)
+            db = gffutils.create_db(DataDir+"/data/genomes/"+args.Genome+'.gff3.gz', DataDir+"/data/genomes/", id_spec={'gene': 'gene_name', 'transcript': "transcript_id"}, merge_strategy="create_unique", transform=transform_func, keep_order=True)
     else :
         db = gffutils.FeatureDB(DataDir+"/data/genomes/"+args.Genome+'.gff3.gz.db')
     out = args.Output+'_'+args.tag+".bed"
