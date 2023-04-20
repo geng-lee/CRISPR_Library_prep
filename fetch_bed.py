@@ -58,13 +58,13 @@ if __name__ == '__main__':
     DataDir = os.path.abspath(os.path.dirname(__file__))
     prot = open(args.prot_file, 'r')
     Lines = prot.readlines()
-    if not os.path.exists(DataDir+"/data/genomes/"+args.Genome+'.gff3.gz.db') :
+    if not os.path.exists(DataDir+"/data/genomes/"+args.Genome+'.db') :
         if not os.path.exists(DataDir+"/data/genomes/"+args.Genome+'.gff3.gz') :
             raise Exception('GFF file is absent.')
         else :
-            db = gffutils.create_db(DataDir+"/data/genomes/"+args.Genome+'.gff3.gz', DataDir+"/data/genomes/", id_spec={'gene': 'gene_name', 'transcript': "transcript_id"}, merge_strategy="create_unique", transform=transform_func, keep_order=True)
+            db = gffutils.create_db(DataDir+"/data/genomes/"+args.Genome+'.gff3.gz', './data/genomes/'+args.Genome+'.db', id_spec={'gene': 'gene_name', 'transcript': "transcript_id"}, merge_strategy="create_unique", transform=transform_func, keep_order=True)
     else :
-        db = gffutils.FeatureDB(DataDir+"/data/genomes/"+args.Genome+'.gff3.gz.db')
+        db = gffutils.FeatureDB(DataDir+"/data/genomes/"+args.Genome+'.db')
     out = args.Output+'_'+args.tag+".bed"
     with open(out, "w") as output_handle:
         for line in Lines:
