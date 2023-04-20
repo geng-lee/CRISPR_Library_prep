@@ -28,6 +28,7 @@ os.chdir(DataDir+'/data/genomes')
 
 url = 'https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_42/gencode.v42.basic.annotation.gff3.gz'
 gff3 = wget.download(url)
+os.rename('gencode.v42.basic.annotation.gff3.gz', 'hg38.gff3.gz')
 
 def transform_func(x):
     # adds some text to the end of transcript IDs
@@ -35,7 +36,7 @@ def transform_func(x):
         x.attributes['transcript_id'][0] += '_transcript'
     return x
 
-db = gffutils.create_db(gff3, ":memory:", id_spec={'gene': 'gene_id', 'transcript': "transcript_id"}, merge_strategy="create_unique", transform=transform_func, keep_order=True)
+db = gffutils.create_db('hg38.gff3.gz', id_spec={'gene': 'gene_id', 'transcript': "transcript_id"}, merge_strategy="create_unique", transform=transform_func, keep_order=True)
 
 
 url='https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz'
