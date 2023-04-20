@@ -6,6 +6,7 @@
 import sys
 import subprocess
 import pkg_resources
+import os
 
 required = {'wget', 'gffutils','Bio', 'pandas','pytabix','matplotlib','numpy','argparse','pyranges','biopython','numpy','scikit-learn','twobitreader','xlwt','rs3'}
 installed = {pkg.key for pkg in pkg_resources.working_set}
