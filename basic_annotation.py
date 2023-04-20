@@ -28,14 +28,15 @@ import gffutils
 import pysam
 import gzip
 import pyranges as pr
+from natsort import natsorted, index_natsorted, order_by_index
 
 argparser = argparse.ArgumentParser(description = 'This Software is a part of a pipeline tool to design Guiding RNA. \n This script relates back the CRISPOR output an initial genome annotation and optionnaly can provide editor specific annotation (Clinvar and/or VCF file)')
 argparser.add_argument('-E','--Editor', metavar = 'file name', dest = 'Editor', nargs='+', type = str, required = False, default=None, help = 'Editor type (will be examined against reference)')
-argparser.add_argument('-S','--ScoreGuide', metavar = 'file name', dest = 'scoreGuide', type = str, required = True, help = 'Crispor score ouput')
-argparser.add_argument('-O','--Output', metavar = 'file', dest = 'Output', type = str, required = False,default='out', help = 'prefix of outputs')
-argparser.add_argument('-e','--Exclude', metavar = 'file', dest = 'excludes', type = str, required = False, default ='', help = 'List of Guides to exclude')
-argparser.add_argument('-C','--Clinvar', dest = 'clinvar', action='store_true', help = 'flag to analyse against clinvar')
-argparser.add_argument('-V','--VEP', dest = 'VEP', action='store_true', help = 'flag to produce vcf file suitable for VEP')
+argparser.add_argument('-S','--ScoreGuide', metavar = 'file name', dest = 'scoreGuide', type = str, required = True, help = 'Crispor ouput')
+argparser.add_argument('-O','--Output', metavar = 'file', dest = 'Output', type = str, required = False,default='out', help = 'prefix of the vcf')
+argparser.add_argument('-X','--exclude', metavar = 'file', dest = 'excludes', type = str, required = False, default ='', help = 'List of Guides to exclude')
+argparser.add_argument('-V','--Per_Variant', dest = 'per_variant', action='store_true', help = 'flag to produce a per variant VCF suitable for VEP')
+argparser.add_argument('-G','--Per_Guide', dest = 'per_guide', action='store_true', help = 'flag to produce a per guide vcf file suitable for VEP')
 argparser.add_argument('-L','--length', metavar = 'int', dest = 'length', type = int, required = False, default ='20', help = 'length of the GuideRNA without PAM')
 argparser.add_argument('-B','--bed', metavar = 'file', dest = 'bed', type = str, required = True, help = 'bedFile protein per region')
 
@@ -59,7 +60,7 @@ if __name__ == '__main__':
         scoreGuides.drop_duplicates(subset='targetSeq_plusStrand', inplace=True, keep=False)
         if not args.excludes == "" :
                 excludes=pd.read_csv(args.excludes,sep='\t')
-                scoreGuides=scoreGuides.loc[scoreGuides['targetSeq'].isin(excludes[0].tolist())]
+                scoreGuides.drop(excludes,inplace=True)
         ### Find protein corresponding
         scoreGuides['positions']=[int(i.replace('rev','').replace('forw','')) for i in scoreGuides.guideId]
         scoreGuides['Chromosome']=[re.split('-|:', j)[0] for j in scoreGuides['#seqId']]
@@ -77,6 +78,7 @@ if __name__ == '__main__':
                 else :
                         protein.extend(list(set(names)))
         scoreGuides['Protein']=protein
+        prots=set(protein)
         scoreGuides['strand']=['-'if 'rev' in j  else '+' for j in scoreGuides.guideId]
         scoreGuides.sort_values(['Protein','guideId','strand'])
         scoreGuides['num']= scoreGuides.groupby(['Protein']).cumcount()+1
@@ -97,7 +99,7 @@ if __name__ == '__main__':
                                 Doench=str(row['Doench \'16-Score'])))
         ### producting Edditor specific files
         if not args.Editor == None :
-                for index, i in editor.iterrows() : ###***?!!?***
+                for index, i in editor.iterrows() :
                         editor_df=scoreGuides.copy()
                         i.window_start=i.window_start
                         i.window_end=i.window_end
@@ -108,15 +110,16 @@ if __name__ == '__main__':
                         editor_df['editing_windowEND']=editor_df['editing_windowSTART'] + (i.window_end-i.window_start)
                         editor_df['editing_window_mutated']=[row.editing_windowSeq.replace(i.BE[0],i.BE[1]) if row.strand=='+' else row.editing_windowSeq.replace(i.BE_RC[0],i.BE_RC[1]) for indexed,row in editor_df.iterrows()]
                         editor_df['nchange']=[sum([not rowed.editing_windowSeq[j]==rowed.editing_window_mutated[j] for j in range(0,len(rowed.editing_window_mutated))]) for indexed, rowed in editor_df.iterrows()]
+                        editor_df=editor_df.reindex(index=order_by_index(editor_df.index, index_natsorted(zip(editor_df.Chromosome, editor_df.target_Start))))
                         with open(args.Output+'.'+i.name +'_empties' + '.txt', 'w') as empties:
                                 for index, row in editor_df.iterrows():
                                         if row.editing_windowSeq ==row.editing_window_mutated :
                                                 empties.write(str(row.name) +'\n')
-                        if args.VEP :
-                                with gzip.open(args.Output+'.'+i.name+'.vcf.gz','wt') as vcf :
+                        if args.per_guide :
+                                with gzip.open(args.Output+'.'+i.name+'_per_guides.vcf.gz','wt') as vcf :
                                         vcf.write('##fileformat=VCFv4.1\n')
                                         vcf.write('##CrisprTransition='+str(index)+ '\n')
-                                        vcf.write('##contig=<ID=chr1,length=249250621>\n##contig=<ID=chr10,length=135534747>\n##contig=<ID=chr11,length=135006516>\n##contig=<ID=chr12,length=133851895>\n##contig=<ID=chr13,length=115169878>\n##contig=<ID=chr14,length=107349540>\n##contig=<ID=chr15,length=102531392>\n##contig=<ID=chr16,length=90354753>\n##contig=<ID=chr17,length=81195210>\n##contig=<ID=chr18,length=78077248>\n##contig=<ID=chr19,length=59128983>\n##contig=<ID=chr2,length=243199373>\n##contig=<ID=chr20,length=63025520>\n##contig=<ID=chr21,length=48129895>\n##contig=<ID=chr22,length=51304566>\n##contig=<ID=chr3,length=198022430>\n##contig=<ID=chr4,length=191154276>\n##contig=<ID=chr5,length=180915260>\n##contig=<ID=chr6,length=171115067>\n##contig=<ID=chr7,length=159138663>\n##contig=<ID=chr8,length=146364022>\n##contig=<ID=chr9,length=141213431>\n##contig=<ID=chrM,length=16571>\n##contig=<ID=chrX,length=155270560>\n##contig=<ID=chrY,length=59373566> \n')
+                                        vcf.write('##contig=<ID=chr1,length=249250621>\n##contig=<ID=chr2,length=243199373>\n##contig=<ID=chr3,length=198022430>\n##contig=<ID=chr4,length=191154276>\n##contig=<ID=chr5,length=180915260>\n##contig=<ID=chr6,length=171115067>\n##contig=<ID=chr7,length=159138663>\n##contig=<ID=chr8,length=146364022>\n##contig=<ID=chr9,length=141213431>\n##contig=<ID=chr10,length=135534747>\n##contig=<ID=chr11,length=135006516>\n##contig=<ID=chr12,length=133851895>\n##contig=<ID=chr13,length=115169878>\n##contig=<ID=chr14,length=107349540>\n##contig=<ID=chr15,length=102531392>\n##contig=<ID=chr16,length=90354753>\n##contig=<ID=chr17,length=81195210>\n##contig=<ID=chr18,length=78077248>\n##contig=<ID=chr19,length=59128983>\n##contig=<ID=chr20,length=63025520>\n##contig=<ID=chr21,length=48129895>\n##contig=<ID=chr22,length=51304566>\n##contig=<ID=chrM,length=16571>\n##contig=<ID=chrX,length=155270560>\n##contig=<ID=chrY,length=59373566>\n')
                                         vcf.write('##INFO=<ID=Protospacer,Number=.,Type=String,Description="Protospace"> \n')
                                         vcf.write('##INFO=<ID=STRAND,Number=.,Type=String,Description="Strand"> \n')
                                         vcf.write('##INFO=<ID=PAM,Number=.,Type=String,Description="Protospacer adjacent motif"> \n')
@@ -133,56 +136,44 @@ if __name__ == '__main__':
                                                                 END='.',
                                                                 FILTER ='.' ,
                                                                 INFO='Protospacer='+row['protospacer']+ ';PAM='+ row['PAM'] +';STRAND='+ row.strand + ';Nchange=' + str(row.nchange)))
-                        if args.clinvar:
-                                with open(args.Output+'.'+i.name+'.Clinvar.csv', "w") as out :
-                                        vcf=pysam.VariantFile(DataDir+'/data/genomes/clinvar.vcf.gz')
-                                        clinvar_version = None
-                                        for line in vcf.header.records:
-                                                if line.key == 'fileDate':
-                                                        clinvar_version = line.value
-                                                        break
-                                        out.write('## Clinvar file Date : ' + clinvar_version + '\n')
-                                        out.write(",".join(['Chromosome','Position','Reference','Alternate','GuideRNA_ID','GuideRNA_sequence','CLNSIG','CLNDN','MC'])+'\n')
-                                        ranges=editor_df[['Chromosome','editing_windowSTART','editing_windowEND','strand']]
-                                        ranges.rename(columns={'Chromosome':"Chromosome","editing_windowSTART":'Start', 'editing_windowEND':'End'}, inplace=True)
-                                        ranges['Start']=ranges.Start
-                                        ranges['End']= ranges.End +1      # To include the ending
-                                        ranges.index=range(0,len(ranges))
-                                        ranges['Sequence']=[j for j in editor_df.protospacer]
-                                        ranges['strand']=[j for j in editor_df.strand]
-                                        ranges['ID']=[j for j in editor_df.ID]
-                                        unmerged=pr.PyRanges(ranges)
-                                        merged=unmerged.merge().as_df()
-                                        merged.to_csv(args.Output+'.'+i.name+'.bed', index=False)
-                                        for rangeIndex, RangeRow in merged.iterrows() :
-                                                for rec in vcf.fetch(RangeRow['Chromosome'].strip('chr'), RangeRow.Start, RangeRow.End-1) : ## pysam already includes ending
-                                                        if not rec.alts is None:
-                                                                for alt in rec.alts :
-                                                                        if len(rec.ref)==1 and (rec.ref==i.BE[0] and i.BE[1] == alt) :
-                                                                                df=pd.DataFrame({"Chromosome": ['chr'+str(rec.contig)], "Start": [rec.pos],"End":[rec.pos+1]})
-                                                                                position= pr.PyRanges(df)
-                                                                                overlap=position.join(unmerged).as_df()
-                                                                                overlap=overlap[overlap.strand=='+']
-                                                                                CLNDN=[""] if rec.info.get('CLNDN') is None else rec.info.get('CLNDN')
-                                                                                CLNSIG=[""] if rec.info.get('CLNSIG') is None else rec.info.get('CLNSIG')
-                                                                                if not overlap.empty:
-                                                                                        out.write('chr'+str(rec.contig) + ','+str(rec.pos) + ',' + rec.ref + ','+ alt+ ','+'|'.join(overlap.ID)+',' + '|'.join(overlap.Sequence) + ',' + '|'.join([j for j in CLNSIG]) + ',' + '|'.join([j for j in CLNDN])+ ','+ "|".join([j for j in rec.info.get('MC')])+'\n' )
-                                                                        if len(rec.ref)==1 and (rec.ref==i.BE_RC[0] and i.BE_RC[1] == alt):
-                                                                                df=pd.DataFrame({"Chromosome": ['chr'+str(rec.contig)], "Start": [rec.pos],"End":[rec.pos+1]})
-                                                                                position= pr.PyRanges(df)
-                                                                                overlap=position.join(unmerged).as_df()
-                                                                                overlap=overlap[overlap.strand=='-']
-                                                                                CLNDN=[""] if rec.info.get('CLNDN') is None else rec.info.get('CLNDN')
-                                                                                CLNSIG=[""] if rec.info.get('CLNSIG') is None else rec.info.get('CLNSIG')
-                                                                                if not overlap.empty:
-                                                                                        out.write('chr'+str(rec.contig) + ','+str(rec.pos) + ',' + rec.ref + ','+ alt+ ','+'|'.join(overlap.ID)+',' + '|'.join(overlap.Sequence) + ',' + '|'.join([j for j in CLNSIG]) + ',' + '|'.join([j for j in CLNDN])+ ','+ "|".join([j for j in rec.info.get('MC')])+'\n' )
-
-                                vcf.close()
-####################################################
-#for index, row in clinvar.iterrows() :
-#...     splited=row.GuideRNA.split('|')
-#...     for j in splited :
-#...             if guides.loc[j].POS>row.Position or guides.loc[j].POS+6<row.Position:
-#...                     print(row)
-#...                     print(j)
-#...                     break
+                        if args.per_variant :
+                                ranges=editor_df.copy()[['Chromosome','editing_windowSTART','editing_windowEND','strand']]
+                                ranges.rename(columns={'Chromosome':"Chromosome","editing_windowSTART":'Start', 'editing_windowEND':'End'}, inplace=True)
+                                ranges['Start']=ranges.Start
+                                ranges['End']= ranges.End +1      # To include the ending
+                                ranges.index=range(0,len(ranges))
+                                ranges['Sequence']=[j for j in editor_df.protospacer]
+                                ranges['PAM']=[j for j in editor_df.PAM]
+                                ranges['strand']=[j for j in editor_df.strand]
+                                ranges['ID']=[j for j in editor_df.ID]
+                                unmerged=pr.PyRanges(ranges)
+                                with gzip.open(args.Output+'.'+i.name+'_per_variant.vcf.gz','wt') as vcf :
+                                        vcf.write('##fileformat=VCFv4.1\n')
+                                        vcf.write('##CrisprTransition='+str(index)+ '\n')
+                                        vcf.write('##INFO=<ID=STRAND,Number=.,Type=String,Description="Strand"> \n')
+                                        vcf.write('##contig=<ID=chr1,length=249250621>\n##contig=<ID=chr2,length=243199373>\n##contig=<ID=chr3,length=198022430>\n##contig=<ID=chr4,length=191154276>\n##contig=<ID=chr5,length=180915260>\n##contig=<ID=chr6,length=171115067>\n##contig=<ID=chr7,length=159138663>\n##contig=<ID=chr8,length=146364022>\n##contig=<ID=chr9,length=141213431>\n##contig=<ID=chr10,length=135534747>\n##\n##contig=<ID=chr11,length=135006516>\n##contig=<ID=chr12,length=133851895>\n##contig=<ID=chr13,length=115169878>\n##contig=<ID=chr14,length=107349540>\n##contig=<ID=chr15,length=102531392>\n##contig=<ID=chr16,length=90354753>\n##contig=<ID=chr17,length=81195210>\n##contig=<ID=chr18,length=78077248>\n##contig=<ID=chr19,length=59128983>\n##contig=<ID=chr20,length=63025520>\n##contig=<ID=chr21,length=48129895>\n##contig=<ID=chr22,length=51304566>\n##contig=<ID=chrM,length=16571>\n##contig=<ID=chrX,length=155270560>\n##contig=<ID=chrY,length=59373566> \n')
+                                        vcf.write('#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n')
+                                        output=set()
+                                        for index, row in editor_df.iterrows():
+                                                for nuc in range(0,len(row.editing_windowSeq)):
+                                                        if row.editing_windowSeq[nuc]==i.BE[0] and row.strand=='+':
+                                                                output.add((row.Chromosome, row.editing_windowSTART+nuc, i.BE[0], i.BE[1],row.strand))
+                                                        if row.editing_windowSeq[nuc]==i.BE_RC[0] and row.strand=='-':
+                                                                output.add((row.Chromosome, row.editing_windowSTART+nuc, i.BE_RC[0], i.BE_RC[1],row.strand))
+                                        df = pd.DataFrame(list(output),columns =['chrom', 'pos', 'REF','ALT','strand'],index=range(0,len(output)))
+                                        output_df=df.reindex(index=order_by_index(df.index, index_natsorted(zip(df.chrom, df.pos))))
+                                        for index, row in output_df.iterrows():
+                                                df=pd.DataFrame({"Chromosome": [str(row.chrom)], "Start": [row.pos],"End":[row.pos+1]})
+                                                position= pr.PyRanges(df)
+                                                overlap=position.join(unmerged).as_df()
+                                                overlap=overlap.loc[overlap['strand']==row['strand']]
+                                                if not overlap.empty :
+                                                        vcf.write('{chrom}\t{pos}\t{vid}\t{ref}\t{alt}\t{END}\t{FILTER}\t{INFO}\n'.format(
+                                                                chrom = str(row['chrom']),
+                                                                pos = str(row['pos']) ,
+                                                                vid=str(row.chrom)+'_'+str(row['pos'])+"_"+str(row['REF'])+"_"+str(row['ALT']),
+                                                                ref= str(row['REF']) ,
+                                                                alt= str(row['ALT']) ,
+                                                                END='.',
+                                                                FILTER ='.' ,
+                                                                INFO='STRAND='+ row.strand+';GuideId='+'|'.join(overlap.ID)+';PAM='+ '|'.join(overlap['PAM'])+';protospacers='+'|'.join(overlap.Sequence)))
