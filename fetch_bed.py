@@ -72,7 +72,7 @@ if __name__ == '__main__':
             if protein.startswith('custom:'):
                 Custom = protein.split(':')
                 Custom_rec = '\t'.join(
-                    Custom[1], Custom[2], Custom[3], protein)
+                    [Custom[1], Custom[2], Custom[3], protein])
                 output_handle.write()
             else:
                 PAM_occurences = []
