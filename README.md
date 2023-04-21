@@ -5,7 +5,7 @@ Software necessary :
 
 nextflow (https://www.nextflow.io/)  
 singulairty (https://docs.sylabs.io/guides/2.6/user-guide/quick_start.html)  
-python/3.8
+python/3.8.10
 
 Necessary Libraries :
 
@@ -48,11 +48,6 @@ Detail see https://github.com/maximilianh/crisporWebsite/ for details
 Goal : This scrip allow for the filtering based on off-target activity prediction. 
  
 python3 Filter_offtarget.py -I [output.offTarget] (additionnal options are availlable)   
- 
-argparser.add_argument('-I','--OffTarget', metavar = 'file', dest = 'OffTarget', type = str, required = True, help = 'Off Target file')
-argparser.add_argument('-C','--CountTreshold', metavar = 'integer', dest = 'N', type = int, default=5, required = False, help = 'Off Target count threshold')
-argparser.add_argument('-T','--Treshold', metavar = 'integer', dest = 'Thres', type = int, default=1.0, required = False, help = 'Threshold CFD to consider')
-argparser.add_argument('-O','--out', metavar = 'file', dest = 'Output', type = str, required = False,default='out', help = 'Ouput file name')
 
 | Option     | significance | Detail |
 | ---      | ---       | ---       |
