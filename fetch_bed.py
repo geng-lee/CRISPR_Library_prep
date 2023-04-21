@@ -31,7 +31,7 @@ argparser.add_argument('-F', '--Features', metavar='Annotation', dest='features'
                        required=False, nargs='*', default=['CDS'], help='Feature Types to be analysed (default exons)')
 argparser.add_argument('-T', '--Tag', metavar='Annotation', dest='tag', type=str,
                        required=False, default='', help='Optional tag (usefull for Essential gene Controls)')
-argparser.add_argument('-M','--Mane_Select', metavar = 'bool', dest = 'MANE_select_option', action='store_true', required = False, help = 'Only select transcript with the main isoform (as define by MANE Select project)')
+argparser.add_argument('-M','--Mane_Select', dest = 'MANE_select_option', action='store_true', required = False, help = 'Only select transcript with the main isoform (as define by MANE Select project)')
 
 def transform_func(x):
     # adds some text to the end of transcript IDs
