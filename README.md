@@ -31,7 +31,7 @@ Usage : python3 Fetch_bed.py -P your_list_protein.txt -G the_genome (additionnal
  
 | Option     | significance | Detail |
 | ---      | ---       | ---       |
-| -P | Protein list | File containing protein name (i.e. BRAC1) (1 per row) |
+| -P | Protein list | File containing protein name (i.e. BRAC1) (1 per row) can also be general regions (custom:chr:start:end) |
 | -G     | Genome genome name | prefix of the genome (within directory data/genomes/[genome].gff3 |
 | -o | out prefix | output prefix |
 | -B | Border | Border to be included around feature as define in feature options (optional default '30')|
