@@ -73,7 +73,7 @@ if __name__ == '__main__':
                 Custom = protein.split(':')
                 Custom_rec = '\t'.join(
                     [Custom[1], Custom[2], Custom[3], protein])
-                output_handle.write()
+                output_handle.write(Custom_rec+'\n')
             else:
                 PAM_occurences = []
                 if args.MANE_select_option:
