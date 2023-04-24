@@ -29,8 +29,6 @@ argparser.add_argument('-B', '--Border', metavar='bp', dest='border', type=int, 
                        default=30, help='Border to be included around feature as define in feature options')
 argparser.add_argument('-F', '--Features', metavar='Annotation', dest='features', type=str,
                        required=False, nargs='*', default=['CDS'], help='Feature Types to be analysed (default exons)')
-argparser.add_argument('-T', '--Tag', metavar='Annotation', dest='tag', type=str,
-                       required=False, default='', help='Optional tag (usefull for Essential gene Controls)')
 argparser.add_argument('-M','--Mane_Select', dest = 'MANE_select_option', action='store_true', required = False, help = 'Only select transcript with the main isoform (as define by MANE Select project)')
 
 def transform_func(x):
@@ -62,10 +60,10 @@ if __name__ == '__main__':
         if not os.path.exists(DataDir+"/data/genomes/"+args.Genome+'.gff3.gz') :
             raise Exception('GFF file is absent.')
         else :
-            db = gffutils.create_db(DataDir+"/data/genomes/"+args.Genome+'.gff3.gz', './data/genomes/'+args.Genome+'.db', id_spec={'gene': 'gene_name', 'transcript': "transcript_id"}, merge_strategy="create_unique", transform=transform_func, keep_order=True)
+            db = gffutils.create_db(DataDir+"/data/genomes/"+args.Genome+'.gff3.gz', DataDir+'/data/genomes/'+args.Genome+'.db', id_spec={'gene': 'gene_name', 'transcript': "transcript_id"}, merge_strategy="create_unique", transform=transform_func, keep_order=True)
     else :
         db = gffutils.FeatureDB(DataDir+"/data/genomes/"+args.Genome+'.db')
-    out = args.Output+'_'+args.tag+".bed"
+    out = args.Output+".bed"
     with open(out, "w") as output_handle:
         for line in Lines:
             protein = str(line.strip())
