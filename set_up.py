@@ -44,3 +44,10 @@ wget.download(url)
 
 url='https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz.tbi'
 wget.download(url)
+
+cd ../../
+mkdir genomes
+cd genomes
+mkdir hg38
+cd hg38
+wget -r -l1 --no-parent -nd  --reject 'index*' --reject 'robots*' http://crispor.tefor.net/genomes/hg38/
