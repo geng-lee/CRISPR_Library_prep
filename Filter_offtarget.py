@@ -18,9 +18,9 @@ argparser.add_argument('-O','--out', metavar = 'file', dest = 'Output', type = s
 
 if __name__ == '__main__':
     args = argparser.parse_args()
-    OffTarget=pd.read_csv(args.OffTarget,sep='\t',usecols=['cfdOfftargetScore','seqId','guideId','guideSeq'], dtype={'cfdOfftargetScore':float,'seqId':str,'guideId':str,'guideSeq'},na_values='None')
+    OffTarget=pd.read_csv(args.OffTarget,sep='\t',usecols=['cfdOfftargetScore','seqId','guideId','guideSeq'], dtype={'cfdOfftargetScore':float,'seqId':str,'guideId':str,'guideSeq':str},na_values='None')
     df=OffTarget.loc[OffTarget.cfdOfftargetScore>=args.Thres]
     df.index=df.seqId+df.guideId
     filtered=df.index.value_counts()>=args.N
-    Excluded=filtered.guideSeq[filtered]
+    Excluded=df.guideSeq[filtered]
     pd.Series(Excluded).to_csv(args.Output,sep='\t',header=None,index=None)
