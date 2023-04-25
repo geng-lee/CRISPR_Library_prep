@@ -62,19 +62,6 @@ python3 Filter_offtarget.py -I [output.offTarget] (additionnal options are avail
  
 <ins> Step 3 basic_annotation.py </ins> 
 
-argparser = argparse.ArgumentParser(description = 'This Software is a part of a pipeline tool to design Guiding RNA. \n This script relates back the CRISPOR output an initial genome annotation and optionnaly can provide editor specific annotation (Clinvar and/or VCF file)')
-argparser.add_argument('-E','--Editor', metavar = 'file name', dest = 'Editor', nargs='+', type = str, required = False, default=None, help = 'Editor type (will be examined against reference)')
-argparser.add_argument('-S','--ScoreGuide', metavar = 'file name', dest = 'scoreGuide', type = str, required = True, help = 'Crispor ouput')
-argparser.add_argument('-O','--Output', metavar = 'file', dest = 'Output', type = str, required = False,default='out', help = 'prefix of the vcf')
-argparser.add_argument('-X','--exclude', metavar = 'file', dest = 'excludes', type = str, required = False, default ='', help = 'List of Guides to exclude')
-argparser.add_argument('-V','--Per_Variant', dest = 'per_variant', action='store_true', help = 'flag to produce a per variant VCF suitable for VEP')
-argparser.add_argument('-R','--Per_sgRNA', dest = 'per_guide', action='store_true', help = 'flag to produce a per guide vcf file suitable for VEP')
-argparser.add_argument('-L','--length', metavar = 'int', dest = 'length', type = int, required = False, default ='20', help = 'length of the GuideRNA without PAM')
-argparser.add_argument('-B','--bed', metavar = 'file', dest = 'bed', type = str, required = True, help = 'bedFile protein per region')
-argparser.add_argument('--gc', dest = 'gc', action='store_true', required = False, help = 'flag not Consider C in GC as affected')
-argparser.add_argument('-G','--Genome', metavar = 'file', dest = 'Genome', type = str, required = '--gc' in sys.argv, help = 'Genome fasta')
-
-
 Goal : Create a file integrating editor information (possibly per-variant and per-Guide
 
 python3 basic_annotation.py -E [editors] -S [output.score] -b [.bed step1] (additionnal options are availlable)  
