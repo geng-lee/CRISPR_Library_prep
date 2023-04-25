@@ -1,4 +1,3 @@
-To do GC low efficiency flag.
 Negative control per Editor
 
 
@@ -63,6 +62,19 @@ python3 Filter_offtarget.py -I [output.offTarget] (additionnal options are avail
  
 <ins> Step 3 basic_annotation.py </ins> 
 
+argparser = argparse.ArgumentParser(description = 'This Software is a part of a pipeline tool to design Guiding RNA. \n This script relates back the CRISPOR output an initial genome annotation and optionnaly can provide editor specific annotation (Clinvar and/or VCF file)')
+argparser.add_argument('-E','--Editor', metavar = 'file name', dest = 'Editor', nargs='+', type = str, required = False, default=None, help = 'Editor type (will be examined against reference)')
+argparser.add_argument('-S','--ScoreGuide', metavar = 'file name', dest = 'scoreGuide', type = str, required = True, help = 'Crispor ouput')
+argparser.add_argument('-O','--Output', metavar = 'file', dest = 'Output', type = str, required = False,default='out', help = 'prefix of the vcf')
+argparser.add_argument('-X','--exclude', metavar = 'file', dest = 'excludes', type = str, required = False, default ='', help = 'List of Guides to exclude')
+argparser.add_argument('-V','--Per_Variant', dest = 'per_variant', action='store_true', help = 'flag to produce a per variant VCF suitable for VEP')
+argparser.add_argument('-R','--Per_sgRNA', dest = 'per_guide', action='store_true', help = 'flag to produce a per guide vcf file suitable for VEP')
+argparser.add_argument('-L','--length', metavar = 'int', dest = 'length', type = int, required = False, default ='20', help = 'length of the GuideRNA without PAM')
+argparser.add_argument('-B','--bed', metavar = 'file', dest = 'bed', type = str, required = True, help = 'bedFile protein per region')
+argparser.add_argument('--gc', dest = 'gc', action='store_true', required = False, help = 'flag not Consider C in GC as affected')
+argparser.add_argument('-G','--Genome', metavar = 'file', dest = 'Genome', type = str, required = '--gc' in sys.argv, help = 'Genome fasta')
+
+
 Goal : Create a file integrating editor information (possibly per-variant and per-Guide
 
 python3 basic_annotation.py -E [editors] -S [output.score] -b [.bed step1] (additionnal options are availlable)  
@@ -72,11 +84,15 @@ python3 basic_annotation.py -E [editors] -S [output.score] -b [.bed step1] (addi
 | -E | Editor | Editor type (will be examined against reference) (can be multiple i.e -E FLNS ABE8 |
 | -S     | ScoreGuide | Crispor Score Guide Ouput |
 | -O | out prefix | output prefix |
-| -e | Exclude | list of guide to exclude (see step 3)|
+| -X | exclude | list of guide to exclude (see step 3)|
 | -V | per-Variant-VCF | flag (i.e usage : -V) to produce a per variant VCF suitable for VEP (optional ; default is False|
-| -G | Per-Guide-VCF | flag (i.e usage : -G) to produce a per guide vcf file suitable for VEP (optional default False) |
+| -R | Per-sgRNA-VCF | flag (i.e usage : -G) to produce a per guide vcf file suitable for VEP (optional default False) |
 | -L | length potospacer | length of the GuideRNA without PAM (optional ; default 20) |
 | -B | bedfile | bedFile protein per region (see step 1) |
+| --gc | GC flag | if relevant, C of GC pattern are not modified in the PER_sgRNA vcf and a flag is added in the per_Variant vcf  |
+| -G | Genome | fasta genome name (expected found as data/genomes/[file].fa) |
+
+
 
 <ins> Step 4 VEP Annotation </ins> 
 
