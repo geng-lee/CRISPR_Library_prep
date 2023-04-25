@@ -191,7 +191,6 @@ if __name__ == '__main__':
                                                 overlap=position.join(unmerged).as_df()
                                                 overlap=overlap.loc[overlap['strand']==row['strand']]
                                                 if args.gc :
-                                                        print(str(Genome_dict[row.chrom][row.pos-1]).upper() + '_' + row.REF)
                                                         if row['strand']=='+' and str(Genome_dict[row.chrom][row.pos-1]).upper()=='C' and str(Genome_dict[row.chrom][row.pos-2]).upper()=='G':
                                                                gc_flag=';GC_FLAG=True'
                                                         elif  row['strand']=='-' and str(Genome_dict[row.chrom][row.pos-1]).upper()=='G' and str(Genome_dict[row.chrom][row.pos]).upper()=='C':
