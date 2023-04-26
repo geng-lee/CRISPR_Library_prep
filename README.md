@@ -1,5 +1,3 @@
-Negative control per Editor
-
 
 # CRISPR_Library_prep
 Script(s) and associated files for CRISPR guide RNA generation
@@ -62,7 +60,7 @@ python3 Filter_offtarget.py -I [output.offTarget] (additionnal options are avail
  
 <ins> Step 3 basic_annotation.py </ins> 
 
-Goal : Create a file integrating editor information (possibly per-variant and per-Guide
+Goal : Create a file integrating editor information (possibly per-variant and per-Guide)
 
 python3 basic_annotation.py -E [editors] -S [output.score] -b [.bed step1] (additionnal options are availlable)  
 
@@ -95,16 +93,13 @@ Usage: python3 oligomer.py -S [study.csv output step 3] -I [positive_control.csv
 
 | Option     | significance | Detail |
 | ---      | ---       | ---       |
-|  -S    |  Study File  | Study proteins/regions' csv (output of step 3) |
-|   -I    |     IStop controls   | Positive Control proteins/regions' csv (output of step 3) |
-|   -V    |     IStop controls VEP   | VEP of positive controls (output of step 4) |
-|   -K    |     N Istop controls  | Number of Istop |
-|   -N    |     Negative Controls   | Negative Control proteins/region's csv (output of step 3) |
-|   -J    |     N Negative Controls   | Number of Negative Control associated Guides|
+|  -S    |  Study File  | Study proteins (output of step 3) |
+|   -P    |     positive control  | Detail of the positive controls ( File N Type) |
+|   -N    |     Negative Controls   | Detail of the positive controls ( File N )|
 | -E | Exclude | list of guide to exclude (optional)|
 | -O | out prefix | output prefix |
 | -BSMBI | restriction site | Sequence of the restriction site (default 'CGTCTC')  |
-| -P | Primer File | Primer file to be found in the data folder (example provided)|
+| -p | Primer File | Primer file to be found in the data folder (example provided)|
 | -f | Forward Primer index | Designation of the Primer pairs to be used |
 | -F | Fragments | Oligomer fragment composition (optional ; default provided) (usage -F 'CGTCTCACACCG', 'GTTTTGAGACGgactgcCGTCTCcCACCG', 'GTTTaGAGACGggactaCGTCTCgCACCG', 'GTTTcGAGACGcttctcCGTCTCtCACCG', 'GTTTgGAGACG') |
 
