@@ -137,7 +137,6 @@ if __name__ == '__main__':
                         if args.per_guide :
                                 with gzip.open(args.Output+'.'+i.name+'_per_guides.vcf.gz','wt') as vcf :
                                         vcf.write('##fileformat=VCFv4.1\n')
-                                        vcf.write('##CrisprTransition='+'-'.join(i.BE)+ '\n')
                                         vcf.write('##contig=<ID=chr1,length=249250621>\n##contig=<ID=chr2,length=243199373>\n##contig=<ID=chr3,length=198022430>\n##contig=<ID=chr4,length=191154276>\n##contig=<ID=chr5,length=180915260>\n##contig=<ID=chr6,length=171115067>\n##contig=<ID=chr7,length=159138663>\n##contig=<ID=chr8,length=146364022>\n##contig=<ID=chr9,length=141213431>\n##contig=<ID=chr10,length=135534747>\n##contig=<ID=chr11,length=135006516>\n##contig=<ID=chr12,length=133851895>\n##contig=<ID=chr13,length=115169878>\n##contig=<ID=chr14,length=107349540>\n##contig=<ID=chr15,length=102531392>\n##contig=<ID=chr16,length=90354753>\n##contig=<ID=chr17,length=81195210>\n##contig=<ID=chr18,length=78077248>\n##contig=<ID=chr19,length=59128983>\n##contig=<ID=chr20,length=63025520>\n##contig=<ID=chr21,length=48129895>\n##contig=<ID=chr22,length=51304566>\n##contig=<ID=chrM,length=16571>\n##contig=<ID=chrX,length=155270560>\n##contig=<ID=chrY,length=59373566>\n')
                                         vcf.write('##INFO=<ID=Protospacer,Number=.,Type=String,Description="Protospace"> \n')
                                         vcf.write('##INFO=<ID=STRAND,Number=.,Type=String,Description="Strand"> \n')
@@ -145,16 +144,15 @@ if __name__ == '__main__':
                                         vcf.write('##INFO=<ID=Nchange,Number=.,Type=Integer,Description="Nummber of nucleotide changes"> \n')
                                         vcf.write('#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n')
                                         for ind, row in editor_df.iterrows():
-                                                if not row.editing_windowSeq ==row.editing_window_mutated :
-                                                        vcf.write('{chrom}\t{pos}\t{vid}\t{ref}\t{alt}\t{END}\t{FILTER}\t{INFO}\n'.format(
-                                                                chrom = str(row['Chromosome']),
-                                                                pos = str(row['editing_windowSTART']) ,
-                                                                vid=str(row.ID),
-                                                                ref= str(row['editing_windowSeq']) ,
-                                                                alt= str(row['editing_window_mutated']) ,
-                                                                END='.',
-                                                                FILTER ='.' ,
-                                                                INFO='Protospacer='+row['protospacer']+ ';PAM='+ row['PAM'] +';STRAND='+ row.strand + ';Nchange=' + str(row.nchange)))
+                                                vcf.write('{chrom}\t{pos}\t{vid}\t{ref}\t{alt}\t{END}\t{FILTER}\t{INFO}\n'.format(
+                                                        chrom = str(row['Chromosome']),
+                                                        pos = str(row['editing_windowSTART']) ,
+                                                        vid=str(row.ID),
+                                                        ref= str(row['editing_windowSeq']) ,
+                                                        alt= str(row['editing_window_mutated']) ,
+                                                        END='.',
+                                                        FILTER ='.' ,
+                                                        INFO='Protospacer='+row['protospacer']+ ';PAM='+ row['PAM'] +';STRAND='+ row.strand + ';Nchange=' + str(row.nchange)))
                         if args.per_variant :
                                 ranges=editor_df.copy()[['Chromosome','editing_windowSTART','editing_windowEND','strand']]
                                 ranges.rename(columns={'Chromosome':"Chromosome","editing_windowSTART":'Start', 'editing_windowEND':'End'}, inplace=True)
@@ -168,8 +166,7 @@ if __name__ == '__main__':
                                 unmerged=pr.PyRanges(ranges)
                                 with gzip.open(args.Output+'.'+i.name+'_per_variant.vcf.gz','wt') as vcf :
                                         vcf.write('##fileformat=VCFv4.1\n')
-                                        vcf.write('##contig=<ID=chr1,length=249250621>\n##contig=<ID=chr2,length=243199373>\n##contig=<ID=chr3,length=198022430>\n##contig=<ID=chr4,length=191154276>\n##contig=<ID=chr5,length=180915260>\n##contig=<ID=chr6,length=171115067>\n##contig=<ID=chr7,length=159138663>\n##contig=<ID=chr8,length=146364022>\n##contig=<ID=chr9,length=141213431>\n##contig=<ID=chr10,length=135534747>\n##\n##contig=<ID=chr11,length=135006516>\n##contig=<ID=chr12,length=133851895>\n##contig=<ID=chr13,length=115169878>\n##contig=<ID=chr14,length=107349540>\n##contig=<ID=chr15,length=102531392>\n##contig=<ID=chr16,length=90354753>\n##contig=<ID=chr17,length=81195210>\n##contig=<ID=chr18,length=78077248>\n##contig=<ID=chr19,length=59128983>\n##contig=<ID=chr20,length=63025520>\n##contig=<ID=chr21,length=48129895>\n##contig=<ID=chr22,length=51304566>\n##contig=<ID=chrM,length=16571>\n##contig=<ID=chrX,length=155270560>\n##contig=<ID=chrY,length=59373566> \n')
-                                        vcf.write('##CrisprTransition='+'-'.join(i.BE)+ '\n')
+                                        vcf.write('##contig=<ID=chr1,length=249250621>\n##contig=<ID=chr2,length=243199373>\n##contig=<ID=chr3,length=198022430>\n##contig=<ID=chr4,length=191154276>\n##contig=<ID=chr5,length=180915260>\n##contig=<ID=chr6,length=171115067>\n##contig=<ID=chr7,length=159138663>\n##contig=<ID=chr8,length=146364022>\n##contig=<ID=chr9,length=141213431>\n##contig=<ID=chr10,length=135534747>\n##contig=<ID=chr11,length=135006516>\n##contig=<ID=chr12,length=133851895>\n##contig=<ID=chr13,length=115169878>\n##contig=<ID=chr14,length=107349540>\n##contig=<ID=chr15,length=102531392>\n##contig=<ID=chr16,length=90354753>\n##contig=<ID=chr17,length=81195210>\n##contig=<ID=chr18,length=78077248>\n##contig=<ID=chr19,length=59128983>\n##contig=<ID=chr20,length=63025520>\n##contig=<ID=chr21,length=48129895>\n##contig=<ID=chr22,length=51304566>\n##contig=<ID=chrM,length=16571>\n##contig=<ID=chrX,length=155270560>\n##contig=<ID=chrY,length=59373566> \n')
                                         vcf.write('##INFO=<ID=Protospacer,Number=.,Type=String,Description="Protospace"> \n')
                                         vcf.write('##INFO=<ID=STRAND,Number=.,Type=String,Description="Strand"> \n')
                                         vcf.write('##INFO=<ID=PAM,Number=.,Type=String,Description="Protospacer adjacent motif"> \n')
