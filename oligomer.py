@@ -53,7 +53,7 @@ def Assert_Fragments_BSMBI(BSMBI, fragments):
 
 def filter_restriction_sgrna (df) :
     for index, row in df.iterrows() :
-        test_restriction_sgrna=args.fragment[0] + row.Protospacer +args.fragment[1]
+        test_restriction_sgrna=args.fragments[0] + row.Protospacer +args.fragments[1]
         if (test_restriction_sgrna.count(args.BSMBI) +  test_restriction_sgrna.count(BSMBI_reverse))>3:
             df.drop(index=index, inplace=True)
 
@@ -69,29 +69,29 @@ if __name__ == '__main__':
     primers_reverse = primers.loc[args.Primer_pair]['Reverse.Binding']
     primers_forward = primers.loc[args.Primer_pair]['SKPP.forward.Seq']
     # process CRISPOR file
-    positive_options_df=pd.DataFrame([args.Vep[(0+i):(2+i)] for i in range(0,len(args.Vep),3)],columns = ['file', 'N','Positive_Type'])
+    positive_options_df=pd.DataFrame([args.Vep[(0+i):(4+i)] for i in range(0,len(args.Vep),4)],columns = ['file','vep', 'N','Positive_Type'])
     positive_tot_df=pd.DataFrame([],columns=['ID','Protospacer'])
     for index, row in positive_options_df.iterrows():
-        vep=pd.read_csv(row.file, sep='\t',comment='#')
-        Control_positive_df=vep[vep.Impact==row.Positive_Type]
-        filter_restriction_sgrna(negative_df)
-        positive_tot_df.append(Control_positive_df[['ID','Protospacer']].sample(n=row.N,random_state=11))
-    negative_df=pd.DataFrame([args.Vep[(0+i):(2+i)] for i in range(0,len(args.Vep),2)],columns = ['file', 'N'])
+        vep=pd.read_csv(row.vep, sep='\t',comment='#')
+        Control_positive=vep[vep.Consequence==row.Positive_Type].Uploaded_variation
+        csv=pd.read_csv(row.file,comment='#')
+        Control_positive_df=csv.iloc[[rowed.ID in list(Control_positive) for ind, rowed in csv.iterrows()]]     
+        filter_restriction_sgrna(Control_positive_df)
+        positive_tot_df=pd.concat([positive_tot_df,Control_positive_df[['ID','Protospacer']].sample(n=int(row.N),random_state=11)])
+    negative_df=pd.DataFrame([args.Negative[(0+i):(2+i)] for i in range(0,len(args.Negative),2)],columns = ['file', 'N'])
     negative_tot_df=pd.DataFrame([],columns=['ID','Protospacer'])
-    negative_unused_df=pd.DataFrame([],columns=['ID','Protospacer'])
-    for index, row in Negative_df.iterrows():
-        negative_df = pd.read_csv(row.file, sep=',',index_col='ID',comment='#')
-        filter_restriction_sgrna(negative_df)
-        negative_ran_df.sample(n=row.N,random_state=11)
-        negative_tot_df.append(negative_df[['ID','Protospacer']])
-        negative_unused_df.append(negative_df.loc[[not (i in negative_ran_df.ID) for i in negative_df.ID],['ID','Protospacer']])
-    Study=pd.read_csv(args.Guide, sep=',',index_col='ID',comment='#')
+    for index, row in negative_df.iterrows():
+        csv = pd.read_csv(row.file, sep=',',comment='#')
+        filter_restriction_sgrna(csv)
+        negative_ran_df=csv.sample(n=int(row.N),random_state=11)
+        negative_tot_df=pd.concat([negative_tot_df,negative_ran_df[['ID','Protospacer']]],)
+    Study=pd.read_csv(args.Guide, sep=',',comment='#')
     Study.drop_duplicates(subset='Protospacer', inplace=True, keep=False)
     filter_restriction_sgrna(Study)
-    guides=pd.concat([Study[['ID','Protospacer']],positive_tot_df,Negative_tot_df])
+    guides=pd.concat([Study[['ID','Protospacer']],positive_tot_df,negative_tot_df])
     if args.Exclusion :
         exclusion=pd.read_csv(args.Exclusion, sep='\t')
-    guides=guides.loc[guides['Protospacer'].isin(excludes[0].tolist())]
+        guides=guides.loc[guides['Protospacer'].isin(excludes[0].tolist())]
     guides.drop_duplicates(subset='Protospacer', inplace=True, keep=False)
     SguidePerConcat = len(args.fragments)-1
     while len(guides) % SguidePerConcat !=0 :
