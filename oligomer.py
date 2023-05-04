@@ -54,8 +54,8 @@ def Assert_Fragments_BSMBI(BSMBI, fragments):
 def filter_restriction_sgrna (df) :
     for index, row in df.iterrows() :
         test_restriction_sgrna=args.fragment[0] + row.Protospacer +args.fragment[1]
-            if (test_restriction_sgrna.count(args.BSMBI) +  test_restriction_sgrna.count(BSMBI_reverse))>3:
-                df.drop(index=index, inplace=True)
+        if (test_restriction_sgrna.count(args.BSMBI) +  test_restriction_sgrna.count(BSMBI_reverse))>3:
+            df.drop(index=index, inplace=True)
 
 if __name__ == '__main__':
     args = argparser.parse_args()
