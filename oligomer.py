@@ -19,7 +19,7 @@ argparser.add_argument('-P', '--Positive', metavar='file',
                        dest='Vep', type=str, required=True, nargs='*', help='Variant effect predictor associated with Positive control library')
 argparser.add_argument('-N', '--Negative', metavar='name',
                        dest='Negative', type=str, required=True, nargs='*', help='Negative controls ')
-argparser.add_argument('-E','--Exclusion', metavar = 'file', dest = 'Exclusion', type = str, required = False,default=None, help = 'List of guides to be excluded')
+#argparser.add_argument('-E','--Exclusion', metavar = 'file', dest = 'Exclusion', type = str, required = False,default=None, help = 'List of guides to be excluded')
 argparser.add_argument('-O', '--out', metavar='file', dest='Output',
                        type=str, required=False, default='out', help='Ouput file name')
 argparser.add_argument('--BSMBI', metavar='file', dest='BSMBI',
@@ -89,9 +89,9 @@ if __name__ == '__main__':
     Study.drop_duplicates(subset='Protospacer', inplace=True, keep=False)
     filter_restriction_sgrna(Study)
     guides=pd.concat([Study[['ID','Protospacer']],positive_tot_df,negative_tot_df])
-    if args.Exclusion :
-        exclusion=pd.read_csv(args.Exclusion, sep='\t')
-        guides=guides.loc[guides['Protospacer'].isin(excludes[0].tolist())]
+    #if args.Exclusion :
+    #    exclusion=pd.read_csv(args.Exclusion, sep='\t')
+    #   guides=guides.loc[guides['Protospacer'].isin(excludes[0].tolist())]
     guides.drop_duplicates(subset='Protospacer', inplace=True, keep=False)
     SguidePerConcat = len(args.fragments)-1
     while len(guides) % SguidePerConcat !=0 :
