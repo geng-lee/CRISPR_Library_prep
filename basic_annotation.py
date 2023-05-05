@@ -78,8 +78,8 @@ if __name__ == '__main__':
         scoreGuides['PAM']=[j[args.length:len(j)].upper() for j in scoreGuides.targetSeq]
         scoreGuides.drop_duplicates(subset='targetSeq_plusStrand', inplace=True, keep=False)
         if not args.excludes == "" :
-                excludes=pd.read_csv(args.excludes,sep='\t')
-                scoreGuides=scoreGuides[[i in excludes for i in scoreGuides.protospacer]]
+                excludes=pd.read_csv(args.excludes,header=None,sep='\t')
+                scoreGuides=scoreGuides[[not(i in excludes[0]) for i in scoreGuides.targetSeq]]
         ### Find protein corresponding
         scoreGuides['positions']=[int(i.replace('rev','').replace('forw','')) for i in scoreGuides.guideId]
         scoreGuides['Chromosome']=[re.split('-|:', j)[0] for j in scoreGuides['#seqId']]
