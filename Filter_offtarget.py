@@ -23,4 +23,4 @@ if __name__ == '__main__':
     df.index=df.seqId+df.guideId
     filtered=df.index.value_counts()>=args.N
     Excluded=df.guideSeq[filtered]
-    pd.Series(Excluded).to_csv(args.Output,sep='\t',header=None,index=None)
+    pd.Series(Excluded).unique().to_csv(args.Output,sep='\t',header=None,index=None)
