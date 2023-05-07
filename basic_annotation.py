@@ -72,14 +72,14 @@ if __name__ == '__main__':
         if args.gc :
                 Genome_dict = SeqIO.to_dict(SeqIO.parse(DataDir+'/data/genomes/'+args.Genome+".fa", "fasta"))
         scoreGuides=pd.read_csv(args.scoreGuide,sep='\t')
+        if not args.excludes == "" :
+                excludes=pd.read_csv(args.excludes,header=None,sep='\t')
+                scoreGuides=scoreGuides[[not(i in excludes[0]) for i in scoreGuides.targetSeq]]
         scoreGuides.drop_duplicates(subset='targetSeq', inplace=True, keep=False)
         scoreGuides['targetSeq_plusStrand']=[str(Seq(row.targetSeq).reverse_complement()) if 'rev' in  row['guideId']  else row['targetSeq'] for index, row in scoreGuides.iterrows()]
         scoreGuides['protospacer']=[j[0:args.length].upper() for j in scoreGuides.targetSeq]
         scoreGuides['PAM']=[j[args.length:len(j)].upper() for j in scoreGuides.targetSeq]
         scoreGuides.drop_duplicates(subset='targetSeq_plusStrand', inplace=True, keep=False)
-        if not args.excludes == "" :
-                excludes=pd.read_csv(args.excludes,header=None,sep='\t')
-                scoreGuides=scoreGuides[[not(i in excludes[0]) for i in scoreGuides.targetSeq]]
         ### Find protein corresponding
         scoreGuides['positions']=[int(i.replace('rev','').replace('forw','')) for i in scoreGuides.guideId]
         scoreGuides['Chromosome']=[re.split('-|:', j)[0] for j in scoreGuides['#seqId']]
