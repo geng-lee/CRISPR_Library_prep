@@ -44,8 +44,17 @@ Goal : Find and evaluate all guideRNA
 Usage : python3 [PATH]/crispor.py genome --genomeDir=[PATH] [bedfile step1] [output.score] -o [output.offTarget] --maxOcc=6000 -p [PAM] --noEffScores
 
 Detail see https://github.com/maximilianh/crisporWebsite/ for details
-genome was downloaded as part of set-up.py
-
+Reference genome can be downloaded using their website, example where Genome is hg38 :
+  
+  
+````
+cd [Genome dir PATH]
+mkdir [Genome]
+cd [Genome]
+wget -r -l1 --no-parent -nd  --reject 'index*' --reject 'robots*' http://crispor.tefor.net/genomes/[Genome]/
+````  
+  
+  
 <ins> Step 3 Filter_offtarget.py </ins> 
 
 Goal : This scrip allow for the filtering based on off-target activity prediction. 
