@@ -12,11 +12,11 @@ import pysam
 argparser = argparse.ArgumentParser(
     description='This Software is part of a tool to design Guiding RNA. \n This script helps design oligomer/concatemere for array Crispr experiment ')
 argparser.add_argument('-S', '--Study', metavar='name',
-                       dest='Guide', type=str, required=True, help='Guide Sequence')
-argparser.add_argument('-P', '--Positive', metavar='file',
-                       dest='Vep', type=str, required=True, nargs='*', help='Variant effect predictor associated with Positive control library')
+                       dest='Guide', type=str, required=True, help='Guide Sequence of the Study')
+argparser.add_argument('-P', '--Positive', metavar='name',
+                       dest='Vep', type=str, required=True, nargs='*', help='Positive controls designation  (file vep N Positive_Type) for each positive controls')
 argparser.add_argument('-N', '--Negative', metavar='name',
-                       dest='Negative', type=str, required=True, nargs='*', help='Negative controls ')
+                       dest='Negative', type=str, required=True, nargs='*', help='Negative controls (file N ) for each controls')
 argparser.add_argument('-O', '--out', metavar='file', dest='Output',
                        type=str, required=False, default='out', help='Ouput file name')
 argparser.add_argument('--BSMBI', metavar='file', dest='BSMBI',
@@ -66,7 +66,6 @@ if __name__ == '__main__':
     primers_reverse = primers.loc[args.Primer_pair]['Reverse.Binding']
     primers_forward = primers.loc[args.Primer_pair]['SKPP.forward.Seq']
     Study=pd.read_csv(args.Guide, sep=',',comment='#')
-    Study.drop_duplicates(subset='Protospacer', inplace=True, keep=False)
     filter_restriction_sgrna(Study)
     guides=Study[['ID','Protospacer']]
     # Positive
@@ -94,10 +93,12 @@ if __name__ == '__main__':
         guides=pd.concat([guides,negative_ran_df[['ID','Protospacer']]])
     guides=guides.drop_duplicates(subset='Protospacer', keep=False)
     SguidePerConcat = len(args.fragments)-1
+    # Complete the number of Sguide Required for complete concatemer
     if len(guides.ID) % SguidePerConcat > 0 :
         df_unused=guides,negative_unused_df.loc[[w not in guides.Protospacer for w in negative_unused_df.Protospacer]]
         guides=pd.concat([guides,negative_unused_df.sample(n=SguidePerConcat-(len(guides.ID) % SguidePerConcat),random_state=11)])
     guides= guides.sample(frac=1,random_state=11)
+    #Output production
     with open(args.Output, 'w') as out:
         for i in range(0, len(guides.index), SguidePerConcat):
             GuidesNames = []
