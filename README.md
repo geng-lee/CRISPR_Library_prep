@@ -94,8 +94,8 @@ Usage: python3 oligomer.py -S [study.csv output step 3] -I [positive_control.csv
 | Option     | significance | Detail |
 | ---      | ---       | ---       |
 |  -S    |  Study File  | Study proteins (output of step 3) |
-|   -P    |     positive control  | Detail of the positive controls ( 'file','vep', 'N','Positive_Type') per each positive controls  |
-|   -N    |     Negative Controls   | Detail of the positive controls ( 'file', 'N' ) for each negative controls|
+|   -P    |     positive control  | Detail of the positive controls ( 'file','vep', 'N','Positive_Type') for each positive controls  |
+|   -N    |     Negative Controls   | Detail of the negative controls ( 'file', 'N' ) for each negative controls|
 | -O | out prefix | output prefix |
 | -BSMBI | restriction site | Sequence of the restriction site (default 'CGTCTC')  |
 | -p | Primer File | Primer file to be found in the data folder (example provided)|
