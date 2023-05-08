@@ -12,7 +12,7 @@ Necessary Libraries :
 
 (detailed in set-up.py)
 
-package RS3 is necessary IF you don't use the the  --noEffScores or specify and --effScores which includes RS3
+package RS3 is necessary IF you don't use the the  --noEffScores flag or specify and --effScores which includes RS3
 
 Quick Start :
 
