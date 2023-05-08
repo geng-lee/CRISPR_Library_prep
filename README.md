@@ -12,6 +12,8 @@ Necessary Libraries :
 
 (detailed in set-up.py)
 
+package RS3 is necessary IF you don't use the the  --noEffScores or specify and --effScores which includes RS3
+
 Quick Start :
 
 <ins> step 0) Software :  </ins>
@@ -39,7 +41,7 @@ Usage : python3 Fetch_bed.py -P your_list_protein.txt -G the_genome (additionnal
 
 Goal : Find and evaluate all guideRNA
 
-Usage : python3 [PATH]/crispor.py genome --genomeDir=[PATH] [bedfile step1] [output.score] -o [output.offTarget] --maxOcc=6000 -p [PAM]
+Usage : python3 [PATH]/crispor.py genome --genomeDir=[PATH] [bedfile step1] [output.score] -o [output.offTarget] --maxOcc=6000 -p [PAM] --noEffScores
 
 Detail see https://github.com/maximilianh/crisporWebsite/ for details
 genome was downloaded as part of set-up.py
