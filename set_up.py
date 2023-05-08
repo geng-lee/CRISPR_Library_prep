@@ -8,7 +8,7 @@ import subprocess
 import pkg_resources
 import os
 
-required = {'wget', 'gffutils','Bio', 'pandas','pytabix','matplotlib','numpy','argparse','pyranges','biopython','numpy','scikit-learn==1.1.1','twobitreader','xlwt','rs3'}
+required = {'wget', 'gffutils','Bio', 'pandas','pytabix','matplotlib','numpy','argparse','pyranges','biopython','numpy','scikit-learn==1.1.1','twobitreader','xlwt'}
 installed = {pkg.key for pkg in pkg_resources.working_set}
 missing = required - installed
 
