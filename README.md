@@ -73,7 +73,7 @@ python3 Filter_offtarget.py -I [output.offTarget] (additionnal options are avail
 
 Goal : Create a file integrating editor information (possibly per-variant and per-Guide)
 
-python3 basic_annotation.py -E [editors] -S [output.score] -b [.bed step1] (additionnal options are availlable)  
+python3 basic_annotation.py -E [editors] -S [output.score] -B [.bed step1] (additionnal options are availlable)  
 
 | Option     | significance | Detail |
 | ---      | ---       | ---       |
@@ -99,8 +99,10 @@ See https://github.com/CERC-Genomic-Medicine/vep_pipeline for further informatio
 usage : nextflow run util/VEP_variant/Annotation.nf -c nextflow.config   
   
 <ins> Step 5 oligomer.py </ins>  
-Goal : This script helps design oligomer/concatemere for array Crispr experiment
-Usage: python3 oligomer.py -S [study.csv output step 3] -I [positive_control.csv output step 3] -V [positive_control.vep output step 4] -K [N istop] -N [negative_control.csv output step 3] -J [N negative_controls]  
+Goal : This script helps design oligomer/concatemere for array Crispr experiment  
+
+Usage: python3 oligomer.py -S [study.csv output step 3] -P [.csv] [vep] [N] [Positive type] -N [.csv] [N] -O [output]  
+
 
 | Option     | significance | Detail |
 | ---      | ---       | ---       |
