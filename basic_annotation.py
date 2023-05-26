@@ -74,7 +74,7 @@ if __name__ == '__main__':
         scoreGuides=pd.read_csv(args.scoreGuide,sep='\t')
         if not args.excludes == "" :
                 excludes=pd.read_csv(args.excludes,header=None,sep='\t')
-                scoreGuides=scoreGuides[[not(i in excludes[0]) for i in scoreGuides.targetSeq]]
+                scoreGuides=scoreGuides[[not(i in excludes[0].tolist()) for i in scoreGuides.targetSeq]]
         scoreGuides.drop_duplicates(subset='targetSeq', inplace=True, keep=False)
         scoreGuides['targetSeq_plusStrand']=[str(Seq(row.targetSeq).reverse_complement()) if 'rev' in  row['guideId']  else row['targetSeq'] for index, row in scoreGuides.iterrows()]
         scoreGuides['protospacer']=[j[0:args.length].upper() for j in scoreGuides.targetSeq]
